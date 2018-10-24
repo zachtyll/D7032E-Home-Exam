@@ -125,14 +125,18 @@ public class Apples2Apples {
 				//If just a number is submitted then this is the Server and there are online clients
 				int numberOfOnlineClients = Integer.parseInt(argv[0]);
 				game = new Apples2Apples(numberOfOnlineClients);
+				System.out.println("Not a number.");
 			} catch(NumberFormatException e) {
 				//If it is not a number then we assume it's an URL and then this is one of the online clients
 				try {
 					game = new Apples2Apples(argv[0]);					
-				} catch (Exception err){System.out.println(err.getMessage());}
+				} catch (Exception err){
+					System.out.println(err.getMessage());
+					System.out.println("Not an URL.");
+				}
 			} catch(Exception e) {
 				e.printStackTrace(System.out);
-				System.out.println("Something went wrong");
+				System.out.println("Not enough players to start a game.");
 			}
 		}
 	}
@@ -215,11 +219,19 @@ public class Apples2Apples {
 	/**
 	 * This is the constructor when this instance is also the server 
 	 **/
-	public Apples2Apples(int numberOfOnlinePlayers) throws Exception {
-  		redApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "redApples.txt"), StandardCharsets.ISO_8859_1)); 
-  		greenApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "greenApples.txt"), StandardCharsets.ISO_8859_1));
-
-  		//shuffle
+	public Apples2Apples(int numberOfOnlinePlayers) throws IOException, InterruptedException, NoSuchFileException {
+		try{
+			System.out.println("Files are being read!");
+			redApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "redApples.txt"), StandardCharsets.ISO_8859_1)); 
+			greenApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "greenApples.txt"), StandardCharsets.ISO_8859_1));
+			System.out.println("Files are done being read!");
+		
+		} catch (Exception e) 
+		{
+			e.printStackTrace(System.out); 
+		}	
+		  //shuffle
+		  System.out.println("Cards shuffling right now!");
 		rnd = ThreadLocalRandom.current();
 		for(int i=redApples.size()-1; i>0; i--) {
 			int index = rnd.nextInt(i+1);
@@ -230,7 +242,7 @@ public class Apples2Apples {
 			int index = rnd.nextInt(i+1);
 			String a = greenApples.get(index); greenApples.set(index, greenApples.get(i)); greenApples.set(i, a); // SWAP
 		}
-
+		System.out.println("Cards shuffling right now!");
 		//Minimum of 4 players, so fill up with bots if numberOfOnlinePlayers is less than 3 (one player is on the server).
 		//Make sure that the player on the server is last in the ArrayList of players, or online players can't play
 

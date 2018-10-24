@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Apples2Apples.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">.</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">Apples2Apples.java</span></div><h1>Apples2Apples.java</h1><pre class="source lang-java linenums">import java.util.*; 
+import java.nio.charset.StandardCharsets; 
+import java.nio.file.*; 
+import java.io.*; 
+import java.net.*;
+import java.util.concurrent.*;
+
+
+class Player {
+	public int playerID;
+	public boolean isBot;
+	public boolean online;
+	public Socket connection;
+	public BufferedReader inFromClient;
+	public DataOutputStream outToClient;
+	public ArrayList&lt;String&gt; hand;
+<span class="nc" id="L17">	public ArrayList&lt;String&gt; greenApples = new ArrayList&lt;String&gt;();</span>
+<span class="nc" id="L18">	public Player(int playerID, ArrayList&lt;String&gt; hand, boolean isBot) {</span>
+<span class="nc" id="L19">		this.playerID = playerID; this.hand = hand; this.isBot = isBot; this.online = false;</span>
+<span class="nc" id="L20">	}</span>
+<span class="nc" id="L21">	public Player(int playerID, boolean isBot, Socket connection, BufferedReader inFromClient, DataOutputStream outToClient) {</span>
+<span class="nc" id="L22">		this.playerID = playerID; this.isBot = isBot; this.online = true;</span>
+<span class="nc" id="L23">		this.connection = connection; this.inFromClient = inFromClient; this.outToClient = outToClient;</span>
+<span class="nc" id="L24">	}</span>
+
+	public void play() {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">		if(isBot) {</span>
+			/** BUG - FIX LATER
+			 * For some reason I must sleep a random amount of time 
+			 * or the playedApple ArrayList won't get all bot answers
+ 			 * (The teacher knows what the bug is, but thought this was fun to do :-)   )
+			 **/
+<span class="nc" id="L33">			Random rnd = ThreadLocalRandom.current();</span>
+<span class="nc" id="L34">			try{Thread.sleep(rnd.nextInt(500));}catch(Exception e){}</span>
+			// continue with non-buggy code
+
+<span class="nc" id="L37">			Apples2Apples.playedApple.add(new PlayedApple(playerID, hand.get(0)));</span>
+<span class="nc" id="L38">			hand.remove(0);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		} else if(online){</span>
+			try {
+<span class="nc" id="L41">				String aPlayedApple = inFromClient.readLine();</span>
+<span class="nc" id="L42">				Apples2Apples.playedApple.add(new PlayedApple(playerID, aPlayedApple));					</span>
+<span class="nc" id="L43">			} catch (Exception e) {}</span>
+		} else { //Server player, no separate thread needed since the server player always acts last
+<span class="nc" id="L45">			System.out.println(&quot;Choose a red apple to play&quot;);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			for(int i=0; i&lt;hand.size(); i++) {</span>
+<span class="nc" id="L47">				System.out.println(&quot;[&quot;+i+&quot;]   &quot; + hand.get(i));</span>
+			}
+<span class="nc" id="L49">			System.out.println(&quot;&quot;);</span>
+
+<span class="nc" id="L51">			int choice = 0;</span>
+			try {
+<span class="nc" id="L53">				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span>
+<span class="nc" id="L54">				String input=br.readLine();</span>
+<span class="nc" id="L55">				choice = Integer.parseInt(input);</span>
+<span class="nc" id="L56">			} catch (NumberFormatException e) {</span>
+<span class="nc" id="L57">				System.out.println(&quot;That is not a valid option&quot;);</span>
+<span class="nc" id="L58">				play();</span>
+<span class="nc" id="L59">			} catch (Exception e) {}</span>
+<span class="nc" id="L60">			Apples2Apples.playedApple.add(new PlayedApple(playerID, hand.get(choice)));</span>
+<span class="nc" id="L61">			hand.remove(choice);</span>
+<span class="nc" id="L62">			System.out.println(&quot;Waiting for other players\n&quot;);	</span>
+		}
+<span class="nc" id="L64">	}</span>
+
+	public PlayedApple judge() {
+<span class="nc bnc" id="L67" title="All 2 branches missed.">		if(isBot){</span>
+<span class="nc" id="L68">			return Apples2Apples.playedApple.get(0);</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">		} else if(online){</span>
+<span class="nc" id="L70">			int playedAppleIndex = 0;</span>
+			try {
+<span class="nc" id="L72">				playedAppleIndex = Integer.parseInt(inFromClient.readLine());	</span>
+<span class="nc" id="L73">			} catch(Exception e) {}</span>
+<span class="nc" id="L74">			return Apples2Apples.playedApple.get(playedAppleIndex);</span>
+		}  else {
+<span class="nc" id="L76">			System.out.println(&quot;Choose which red apple wins\n&quot;);</span>
+<span class="nc" id="L77">			int choice = 0;</span>
+			try {
+<span class="nc" id="L79">				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span>
+<span class="nc" id="L80">				String input=br.readLine();</span>
+<span class="nc" id="L81">				choice = Integer.parseInt(input);</span>
+<span class="nc" id="L82">			} catch (NumberFormatException e) {</span>
+<span class="nc" id="L83">				System.out.println(&quot;That is not a valid option&quot;);</span>
+<span class="nc" id="L84">				judge();</span>
+<span class="nc" id="L85">			} catch (Exception e) {}</span>
+<span class="nc" id="L86">			return Apples2Apples.playedApple.get(choice);			</span>
+		}
+	}
+
+	public void addCard(String redApple) {
+<span class="nc bnc" id="L91" title="All 4 branches missed.">		if(isBot || !online) {</span>
+<span class="nc" id="L92">			hand.add(redApple);</span>
+		} else {
+			try {
+<span class="nc" id="L95">				outToClient.writeBytes(redApple + &quot;\n&quot;);</span>
+<span class="nc" id="L96">			} catch (Exception e){}</span>
+		}
+<span class="nc" id="L98">	}</span>
+}
+
+class PlayedApple {
+	public int playerID;
+	public String redApple;
+<span class="nc" id="L104">	public PlayedApple(int playerID, String redApple) {</span>
+<span class="nc" id="L105">		this.playerID = playerID;</span>
+<span class="nc" id="L106">		this.redApple = redApple;</span>
+<span class="nc" id="L107">	}</span>
+}
+
+public class Apples2Apples {
+	public ArrayList&lt;String&gt; redApples;
+	public ArrayList&lt;String&gt; greenApples;
+<span class="nc" id="L113">	public static ArrayList&lt;PlayedApple&gt; playedApple = new ArrayList&lt;PlayedApple&gt;();</span>
+<span class="nc" id="L114">	public ArrayList&lt;Player&gt; players = new ArrayList&lt;Player&gt;();</span>
+	public Random rnd;
+
+	public static void main(String argv[]) {
+		Apples2Apples game;
+<span class="nc bnc" id="L119" title="All 2 branches missed.">		if(argv.length == 0) {</span>
+			try {
+<span class="nc" id="L121">				game = new Apples2Apples(0);				</span>
+<span class="nc" id="L122">			} catch (Exception e) {e.printStackTrace(System.out);}</span>
+		} else {
+			try {
+				//If just a number is submitted then this is the Server and there are online clients
+<span class="nc" id="L126">				int numberOfOnlineClients = Integer.parseInt(argv[0]);</span>
+<span class="nc" id="L127">				game = new Apples2Apples(numberOfOnlineClients);</span>
+<span class="nc" id="L128">			} catch(NumberFormatException e) {</span>
+				//If it is not a number then we assume it's an URL and then this is one of the online clients
+				try {
+<span class="nc" id="L131">					game = new Apples2Apples(argv[0]);					</span>
+<span class="nc" id="L132">				} catch (Exception err){System.out.println(err.getMessage());}</span>
+<span class="nc" id="L133">			} catch(Exception e) {</span>
+<span class="nc" id="L134">				e.printStackTrace(System.out);</span>
+<span class="nc" id="L135">				System.out.println(&quot;Something went wrong&quot;);</span>
+<span class="nc" id="L136">			}</span>
+		}
+<span class="nc" id="L138">	}</span>
+	/**
+	 * This is the constructor when this instance is one of the online clients
+	 **/
+<span class="nc" id="L142">	public Apples2Apples(String ipAddress) throws Exception {</span>
+		//Connect to server
+<span class="nc" id="L144">		Socket aSocket = new Socket(ipAddress, 2048);</span>
+<span class="nc" id="L145">		DataOutputStream outToServer = new DataOutputStream(aSocket.getOutputStream());</span>
+<span class="nc" id="L146">		BufferedReader inFromServer = new BufferedReader(new InputStreamReader(aSocket.getInputStream()));</span>
+		//Get the hand of apples from server
+<span class="nc" id="L148">		String[] applesString = (inFromServer.readLine()).split(&quot;;&quot;);</span>
+<span class="nc" id="L149">		ArrayList&lt;String&gt; hand = new ArrayList&lt;String&gt;(Arrays.asList(applesString));</span>
+
+		//Setup is completed, now play the game
+		while(true) {
+			//receive info about being the judge or not
+<span class="nc" id="L154">			String judgeString = inFromServer.readLine();</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">			boolean judge = (judgeString.compareTo(&quot;JUDGE&quot;)==0);</span>
+			//If someone wins the game the FINISHED string is written, and it just happens to be caught here
+<span class="nc bnc" id="L157" title="All 2 branches missed.">			if(judgeString.startsWith(&quot;FINISHED&quot;)) {</span>
+<span class="nc" id="L158">				System.out.println(&quot;\n&quot;+judgeString);</span>
+<span class="nc" id="L159">				break;</span>
+			}
+
+<span class="nc" id="L162">			System.out.println(&quot;*****************************************************&quot;);</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">			if(judge) {</span>
+<span class="nc" id="L164">				System.out.println(&quot;**                 NEW ROUND - JUDGE               **&quot;);				</span>
+			} else {
+<span class="nc" id="L166">				System.out.println(&quot;**                    NEW ROUND                    **&quot;);</span>
+
+			}
+<span class="nc" id="L169">			System.out.println(&quot;*****************************************************&quot;);</span>
+
+			//receive and print the green apple that has been played
+<span class="nc" id="L172">			String greenApple = inFromServer.readLine();</span>
+<span class="nc" id="L173">			System.out.println(greenApple + &quot;\n&quot;);</span>
+
+<span class="nc bnc" id="L175" title="All 2 branches missed.">			if(!judge) {</span>
+				//Play your red apple
+<span class="nc" id="L177">				System.out.println(&quot;Choose a red apple to play&quot;);</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">				for(int i=0; i&lt;hand.size(); i++) {</span>
+<span class="nc" id="L179">					System.out.println(&quot;[&quot;+i+&quot;]   &quot; + hand.get(i));</span>
+				}
+<span class="nc" id="L181">				System.out.println(&quot;&quot;);</span>
+				int choice;
+<span class="nc" id="L183">				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span>
+<span class="nc" id="L184">				String input=br.readLine();</span>
+<span class="nc" id="L185">				choice = Integer.parseInt(input);</span>
+<span class="nc" id="L186">				outToServer.writeBytes(hand.get(choice)+&quot;\n&quot;);</span>
+<span class="nc" id="L187">				hand.remove(choice);</span>
+<span class="nc" id="L188">				System.out.println(&quot;Waiting for other players\n&quot;);				</span>
+			}
+
+			//Receive the played apples from server
+<span class="nc" id="L192">			String playedApples = (inFromServer.readLine()).replaceAll(&quot;#&quot;, &quot;\n&quot;);</span>
+<span class="nc" id="L193">			System.out.println(&quot;\nThe following apples were played:\n&quot;+playedApples);</span>
+
+<span class="nc bnc" id="L195" title="All 2 branches missed.">			if(judge) {</span>
+				//choose which red apple should win
+<span class="nc" id="L197">				System.out.println(&quot;Choose which red apple wins\n&quot;);</span>
+				int choice;
+<span class="nc" id="L199">				BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</span>
+<span class="nc" id="L200">				String input=br.readLine();</span>
+<span class="nc" id="L201">				outToServer.writeBytes(input+&quot;\n&quot;);</span>
+			}
+
+<span class="nc" id="L204">			String winningRedApple = inFromServer.readLine();</span>
+<span class="nc" id="L205">			System.out.println(winningRedApple + &quot;\n&quot;);</span>
+
+			//Non judges get a new red apple to replace the one that was played
+<span class="nc bnc" id="L208" title="All 2 branches missed.">			if(!judge) {</span>
+<span class="nc" id="L209">				String newRedApple = inFromServer.readLine();</span>
+<span class="nc" id="L210">				hand.add(newRedApple);</span>
+			}
+<span class="nc" id="L212">		}</span>
+<span class="nc" id="L213">	}</span>
+
+	/**
+	 * This is the constructor when this instance is also the server 
+	 **/
+<span class="nc" id="L218">	public Apples2Apples(int numberOfOnlinePlayers) throws Exception {</span>
+<span class="nc" id="L219">  		redApples = new ArrayList&lt;String&gt;(Files.readAllLines(Paths.get(&quot;./&quot;, &quot;redApples.txt&quot;), StandardCharsets.ISO_8859_1)); </span>
+<span class="nc" id="L220">  		greenApples = new ArrayList&lt;String&gt;(Files.readAllLines(Paths.get(&quot;./&quot;, &quot;greenApples.txt&quot;), StandardCharsets.ISO_8859_1));</span>
+
+  		//shuffle
+<span class="nc" id="L223">		rnd = ThreadLocalRandom.current();</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">		for(int i=redApples.size()-1; i&gt;0; i--) {</span>
+<span class="nc" id="L225">			int index = rnd.nextInt(i+1);</span>
+<span class="nc" id="L226">			String a = redApples.get(index); redApples.set(index, redApples.get(i)); redApples.set(i, a); // SWAP</span>
+		}
+<span class="nc" id="L228">		rnd = ThreadLocalRandom.current();</span>
+<span class="nc bnc" id="L229" title="All 2 branches missed.">		for(int i=greenApples.size()-1; i&gt;0; i--) {</span>
+<span class="nc" id="L230">			int index = rnd.nextInt(i+1);</span>
+<span class="nc" id="L231">			String a = greenApples.get(index); greenApples.set(index, greenApples.get(i)); greenApples.set(i, a); // SWAP</span>
+		}
+
+		//Minimum of 4 players, so fill up with bots if numberOfOnlinePlayers is less than 3 (one player is on the server).
+		//Make sure that the player on the server is last in the ArrayList of players, or online players can't play
+
+<span class="nc" id="L237">		ServerSocket aSocket = new ServerSocket(2048);</span>
+<span class="nc bnc" id="L238" title="All 2 branches missed.">		for(int onlineClient=0; onlineClient&lt;numberOfOnlinePlayers; onlineClient++) {</span>
+<span class="nc" id="L239">			Socket connectionSocket = aSocket.accept();</span>
+<span class="nc" id="L240">			BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));</span>
+<span class="nc" id="L241">			DataOutputStream outToClient = new DataOutputStream(connectionSocket.getOutputStream());</span>
+<span class="nc" id="L242">			String handString = &quot;&quot;;</span>
+<span class="nc bnc" id="L243" title="All 2 branches missed.">			for(int i=0; i&lt;7; i++) { //Deal 7 cards to the online Player</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">				handString = ((handString.compareTo(&quot;&quot;)==0)?&quot;&quot;:(handString+&quot;;&quot;)) + redApples.remove(0); //Create String of Cards, separated by ;</span>
+			}
+<span class="nc" id="L246">			outToClient.writeBytes(handString+&quot;\n&quot;);</span>
+<span class="nc" id="L247">			players.add(new Player(onlineClient, false, connectionSocket, inFromClient, outToClient));</span>
+<span class="nc" id="L248">			System.out.println(&quot;Connected to &quot; + &quot;Player ID: &quot; + (onlineClient));</span>
+		}
+		//Add bots to reach 3 players excluding server player
+<span class="nc bnc" id="L251" title="All 2 branches missed.">		if(numberOfOnlinePlayers &lt; 3) {</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">			for(int i=numberOfOnlinePlayers; i&lt;=3; i++) {</span>
+<span class="nc" id="L253">				players.add(new Player(i, new ArrayList&lt;String&gt;(), true));</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">				for(int j=0; j&lt;7; j++) { //Deal 7 cards to the Non-online bot</span>
+<span class="nc" id="L255">					players.get(i).hand.add(redApples.remove(0));</span>
+				}
+			}
+		}
+		//Add server player
+<span class="nc" id="L260">		players.add(new Player(players.size(), new ArrayList&lt;String&gt;(), false));</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">		for(int j=0; j&lt;7; j++) { //Deal 7 cards to the Player</span>
+<span class="nc" id="L262">			players.get(players.size()-1).hand.add(redApples.remove(0));</span>
+		}
+
+		//Randomise which player starts as judge
+<span class="nc" id="L266">		int judge = rnd.nextInt(players.size());</span>
+
+		//****** Setup is completed, start playing the game
+<span class="nc" id="L269">		boolean finished = false;</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">		while(!finished) {</span>
+
+<span class="nc" id="L272">			System.out.println(&quot;*****************************************************&quot;);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">			if(judge==players.size()-1) {</span>
+<span class="nc" id="L274">				System.out.println(&quot;**                 NEW ROUND - JUDGE               **&quot;);				</span>
+			} else {
+<span class="nc" id="L276">				System.out.println(&quot;**                    NEW ROUND                    **&quot;);</span>
+
+			}
+<span class="nc" id="L279">			System.out.println(&quot;*****************************************************&quot;);</span>
+
+<span class="nc" id="L281">			String playedGreenApple = greenApples.remove(0);</span>
+			//show the green apple to all the online clients and the server player
+<span class="nc" id="L283">			System.out.println(&quot;Green apple: &quot; + playedGreenApple + &quot;\n&quot;);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">			for(int i=0; i&lt;numberOfOnlinePlayers; i++) {</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">				players.get(i).outToClient.writeBytes(((judge==i)?&quot;JUDGE&quot;:&quot;NOTJUDGE&quot;)+&quot;\n&quot;);</span>
+<span class="nc" id="L286">				players.get(i).outToClient.writeBytes(&quot;Green apple: &quot; + playedGreenApple + &quot;\n&quot;);</span>
+			}
+
+			//Let all but the judge play their red apple
+			//Create a threadpool so all players can pick their red apple at once
+<span class="nc" id="L291">			ExecutorService threadpool = Executors.newFixedThreadPool(players.size()-1);	</span>
+
+<span class="nc bnc" id="L293" title="All 2 branches missed.">			for(int i=0; i&lt;players.size(); i++) {</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">				if(i!=judge) {</span>
+<span class="nc" id="L295">					Player currentPlayer = players.get(i);</span>
+
+					//Make sure every player can answer at the same time
+<span class="nc" id="L298">					Runnable task = new Runnable() {</span>
+						@Override
+						public void run() {
+<span class="nc" id="L301">							currentPlayer.play();	</span>
+<span class="nc" id="L302">						}</span>
+					};
+<span class="nc" id="L304">					threadpool.execute(task);</span>
+				}
+			}
+<span class="nc" id="L307">			threadpool.shutdown();</span>
+
+			//wait for all the answers to come in
+/*			while(playedApple.size() &lt; players.size()-1) {
+				Thread.sleep(100);
+			}*/
+<span class="nc bnc" id="L313" title="All 2 branches missed.">			while(!threadpool.isTerminated()) {</span>
+<span class="nc" id="L314">				Thread.sleep(100);</span>
+			}
+
+			//Shuffle the answers
+<span class="nc" id="L318">			rnd = ThreadLocalRandom.current();</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">			for(int i=playedApple.size()-1; i&gt;0; i--) {</span>
+<span class="nc" id="L320">				int index = rnd.nextInt(i+1);</span>
+<span class="nc" id="L321">				PlayedApple a = playedApple.get(index); playedApple.set(index, playedApple.get(i)); playedApple.set(i, a); // SWAP</span>
+			}
+
+			//show the played apples to the online players and the server player
+<span class="nc" id="L325">			String playedApplesString = playedGreenApple;</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">			for(int j=0; j&lt;players.size()-1; j++) { //Iterate between the submitted apples</span>
+<span class="nc" id="L327">				playedApplesString = playedApplesString + &quot;#\t[&quot;+j+&quot;] &quot;+ playedApple.get(j).redApple; //Create printable String of apples</span>
+			}
+<span class="nc bnc" id="L329" title="All 2 branches missed.">			for(int i=0; i&lt;numberOfOnlinePlayers; i++) {</span>
+<span class="nc" id="L330">				players.get(i).outToClient.writeBytes(playedApplesString+&quot;\n&quot;);</span>
+			}
+<span class="nc" id="L332">			playedApplesString = playedApplesString.replaceAll(&quot;#&quot;, &quot;\n&quot;);</span>
+<span class="nc" id="L333">			System.out.println(&quot;\nThe following apples were played:\n&quot;+playedApplesString);</span>
+
+			//Judge which is the best red apple
+<span class="nc" id="L336">			PlayedApple winningApple = players.get(judge).judge();</span>
+<span class="nc" id="L337">			players.get(winningApple.playerID).greenApples.add(playedGreenApple); //add point to winner</span>
+			
+			//notify everyone about who won
+<span class="nc bnc" id="L340" title="All 2 branches missed.">			String winnerString = ((players.get(winningApple.playerID).isBot?&quot;Bot&quot;:&quot;Player&quot;) + &quot; ID&quot;+winningApple.playerID+</span>
+										&quot; won with: &quot; + winningApple.redApple);
+<span class="nc" id="L342">			System.out.println(winnerString + &quot;\n&quot;);</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">			for(int i=0; i&lt;numberOfOnlinePlayers; i++) {</span>
+<span class="nc" id="L344">				players.get(i).outToClient.writeBytes(winnerString+&quot;\n&quot;);</span>
+			}
+
+<span class="nc" id="L347">			playedApple.clear();</span>
+			//refill cards and check winner
+<span class="nc" id="L349">			int gameWinner = 0;</span>
+<span class="nc bnc" id="L350" title="All 2 branches missed.">			for(int i=0; i&lt;players.size(); i++) {</span>
+<span class="nc bnc" id="L351" title="All 2 branches missed.">				if(i!=judge) {</span>
+<span class="nc" id="L352">					players.get(i).addCard(redApples.remove(0));</span>
+				}
+				//Check if any player have enough green apples to win
+<span class="nc bnc" id="L355" title="All 2 branches missed.">				if(players.get(i).greenApples.size() &gt;= 4) {</span>
+<span class="nc" id="L356">					gameWinner = i;</span>
+<span class="nc" id="L357">					finished=true;</span>
+				}
+			}
+
+<span class="nc bnc" id="L361" title="All 2 branches missed.">			if(finished) {</span>
+<span class="nc bnc" id="L362" title="All 2 branches missed.">				String gameWinnerString = &quot;FINISHED: &quot;+((players.get(gameWinner).isBot?&quot;Bot&quot;:&quot;Player&quot;) + &quot; ID&quot;+gameWinner+</span>
+										&quot; won the game&quot;);
+				//Notify online clients that someone won the game
+<span class="nc bnc" id="L365" title="All 2 branches missed.">				for(int i=0; i&lt;numberOfOnlinePlayers; i++) {</span>
+<span class="nc" id="L366">					players.get(i).outToClient.writeBytes(gameWinnerString+&quot;\n&quot;);</span>
+				}
+<span class="nc" id="L368">				System.out.println(&quot;\n&quot;+gameWinnerString);</span>
+			}
+
+			//Assign a new judge
+<span class="nc bnc" id="L372" title="All 2 branches missed.">			judge=((judge==(players.size()-1))?0:(judge+1));</span>
+<span class="nc" id="L373">		}</span>
+<span class="nc" id="L374">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>

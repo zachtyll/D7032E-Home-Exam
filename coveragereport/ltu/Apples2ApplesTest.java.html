@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="sv"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Apples2ApplesTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">.</a> &gt; <a href="index.source.html" class="el_package">ltu</a> &gt; <span class="el_source">Apples2ApplesTest.java</span></div><h1>Apples2ApplesTest.java</h1><pre class="source lang-java linenums">package ltu;
+
+import static org.junit.Assert.*;
+
+import java.beans.Transient;
+
+import org.junit.Test;
+
+<span class="fc" id="L9">public class Apples2ApplesTest</span>
+{
+    @Test   // 1. Read all the green apples (adjectives) from a file and add to the green apples deck.
+    public void test_if_green_apples_are_read()
+    {
+<span class="fc" id="L14">        assertEquals(1, 1);</span>
+<span class="fc" id="L15">    }</span>
+
+    @Test   // 2. Read all the red apples (nouns) from a file and add to the red apples deck.
+    public void test_if_red_apples_are_read()
+    {
+
+<span class="fc" id="L21">    }</span>
+
+    @Test   // 3. Shuffle both the green apples and red apples decks. 
+    public void test_if_decks_are_shuffled()
+    {
+
+<span class="fc" id="L27">    }</span>
+
+    @Test   // 4. Deal seven red apples to each player, including the judge.  
+    public void test_if_each_player_gets_seven_cards()
+    {
+
+<span class="fc" id="L33">    }</span>
+    
+    @Test   // 5. Randomise which player starts being the judge.
+    public void test_if_random_judge()
+    {
+
+<span class="fc" id="L39">    }</span>
+    @Test   // 6. A green apple is drawn from the pile and shown to everyone  
+    public void test_if_a_green_card_is_drawn()
+    {
+
+<span class="fc" id="L44">    }</span>
+    @Test   // 7. All players (except the judge) choose one red apple from their hand (based on the green apple) and plays it.
+    public void test_if_all_players_have_to_play_cards()
+    {
+
+<span class="fc" id="L49">    }</span>
+    @Test   // 8. The printed order of the played red apples should be randomised before shown to everyone. 
+    public void test_if_the_printed_order_is_randomised()
+    {
+
+<span class="fc" id="L54">    }</span>
+    @Test   // 9. All players (except the judge) must play their red apples before the results are shown.  
+    public void test_if_all_players_must_play_before_cards_shown()
+    {
+
+<span class="fc" id="L59">    }</span>
+    @Test   // 10. The judge selects a favourite red apple. The player who submitted the favourite red 
+            // apple is rewarded the green apple as a point (rule 14). 
+    public void test_if_chosen_player_is_rewarded_points()
+    {
+
+<span class="fc" id="L65">    }</span>
+    @Test   // 11. All the submitted red apples are discarded  
+    public void test_if_submitted_red_apples_are_discarded()
+    {
+
+<span class="fc" id="L70">    }</span>
+    @Test   // 12. All players are given new red apples until they have 7 red apples 
+    public void test_if_all_players_are_given_seven_red_apples()
+    {
+
+<span class="fc" id="L75">    }</span>
+    @Test   // 13. The next player in the list becomes the judge. Repeat from step 6 
+            // until someone wins the game. Winning the game
+    public void test_if_next_player_is_judge()
+    {
+
+<span class="fc" id="L81">    }</span>
+    @Test   // 14. Keep score by keeping the green apples you’ve won. 
+    public void test_if_score_is_being_kept()
+    {
+
+<span class="fc" id="L86">    }</span>
+    @Test   // 15. Here’s how to tell when the game is over: 
+            //     • For 4 players, 8 green apples win. 
+            //     • For 5 players, 7 green apples win. 
+            //     • For 6 players, 6 green apples win. 
+            //     • For 7 players, 5 green apples win. 
+            //     • For 8+ players, 4 green apples win.  
+    public void test_if_game_is_over()
+    {
+
+<span class="fc" id="L96">    }</span>
+
+
+}
+
+
+// Rules: Setting up the game 
+ 
+
+
+ 
+ 
+
+ 
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
