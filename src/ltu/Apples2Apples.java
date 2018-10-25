@@ -5,6 +5,8 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.*;
 
+import ltu.Utils;
+
 
 class Player {
 	public int playerID;
@@ -219,19 +221,16 @@ public class Apples2Apples {
 	/**
 	 * This is the constructor when this instance is also the server 
 	 **/
-	public Apples2Apples(int numberOfOnlinePlayers) throws IOException, InterruptedException, NoSuchFileException {
-		try{
-			System.out.println("Files are being read!");
-			redApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "redApples.txt"), StandardCharsets.ISO_8859_1)); 
-			greenApples = new ArrayList<String>(Files.readAllLines(Paths.get("./", "greenApples.txt"), StandardCharsets.ISO_8859_1));
-			System.out.println("Files are done being read!");
+
+
+	
+	public Apples2Apples(int numberOfOnlinePlayers) throws Exception, NoSuchFileException {
+
+
+		Utils myUtils = new readRedAppleFiles();
 		
-		} catch (Exception e) 
-		{
-			e.printStackTrace(System.out); 
-		}	
 		  //shuffle
-		  System.out.println("Cards shuffling right now!");
+		System.out.println("Cards shuffling right now!");
 		rnd = ThreadLocalRandom.current();
 		for(int i=redApples.size()-1; i>0; i--) {
 			int index = rnd.nextInt(i+1);
