@@ -5,8 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class GreenApples implements Deck {
 
@@ -25,6 +24,13 @@ public class GreenApples implements Deck {
         }   catch (IOException e) {
                 System.out.println(e);
             }
+        return deck;
+    }
+
+    @Override
+    public List shuffleDeck(List deck) {
+        // Shuffle the deck.
+        Collections.shuffle(deck);
         return deck;
     }
  }

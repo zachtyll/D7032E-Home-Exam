@@ -1,16 +1,22 @@
 package refactor;
 
+import java.util.*;
+
 public class Main {
 
     public static void main(String[] args) {
         DeckFactory DeckFactory = new DeckFactory();
  
-        //get an object of redApples and call its createDeckFromFile method.
+        // Get an object of redApples and call createDeckFromFile method to scan the text file.
         Deck redDeck = DeckFactory.getDeck("REDAPPLE");
-        redDeck.createDeckFromFile();
- 
-        //get an object of greenApples and call its createDeckFromFile method.
+        List redApples = redDeck.createDeckFromFile();
+        // Shuffle the deck.
+        greenDeck.shuffleDeck(redApples);
+
+        // Get an object of greenApples and call createDeckFromFile method to scan the text file.
         Deck greenDeck = DeckFactory.getDeck("GREENAPPLE");
-        greenDeck.createDeckFromFile();
+        List greenApples = greenDeck.createDeckFromFile();
+        // Shuffle the deck.
+        greenDeck.shuffleDeck(greenApples);
     }
  }

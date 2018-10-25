@@ -5,4 +5,5 @@ import java.util.ArrayList;
 
 public interface Deck {
     List createDeckFromFile();
+    List shuffleDeck(List deck);
  }
