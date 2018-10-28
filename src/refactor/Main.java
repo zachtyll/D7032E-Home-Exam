@@ -25,15 +25,15 @@ public class Main {
 
     public static void main(String[] args) {
         
-    List<Judge> playerList = new ArrayList<Judge>();
+    List<Role> playerList = new ArrayList<Role>();
 
-    playerList.add(new PlayerJudgeDecorator(new APlayer()));
-    playerList.add(new PlayerJudgeDecorator(new APlayer()));
-    playerList.get(0).vote();
-    playerList.get(0).setJudge(true);
-    playerList.get(0).vote();
+    playerList.add(new PlayerRoleDecorator(new Judge()));
+    playerList.add(new PlayerRoleDecorator(new Judge()));
+    playerList.get(0).canAct();
+    playerList.get(0).setRole(true);
+    playerList.get(0).canAct();
 
-    Player ladok = new JudgePlayerDecorator(playerList.get(0));
+
     // playerList.add(new JudgePlayerDecorator(new HumanPlayer()));
     // playerList.add(new JudgePlayerDecorator(new HumanPlayer()));
     // playerList.add(new JudgePlayerDecorator(new HumanPlayer()));
@@ -51,7 +51,7 @@ public class Main {
     // JudgePlayerDecorator(playerList.get(1));
     // System.out.println(playerList.get(0).getPlayerID());
 
-    // for(Judge element : playerList) {
+    // for(Role element : playerList) {
     //     element.vote();
     // }
 
