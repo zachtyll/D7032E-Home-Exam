@@ -1,4 +1,4 @@
-package refactor;
+package refactor.decks;
 
 import java.util.List;
 import java.util.ArrayList;
